@@ -58,6 +58,8 @@ sudo service smbd restart
 sudo service nbmd restart
 ```
 
+Note : I've already connected the drive (File explorer > This computer > Add a network drive) in which one in added my credentials.
+
 2. Powershell script
 The .ps1 script synchronize the remote keepass database to a local folder. If there is no remote file, it tries to find the local one and copy it to the remote one.
 
