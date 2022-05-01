@@ -1,15 +1,15 @@
 <!-- PROJECT LOGO -->
 <br />
-  <h3 align="center">Web Scraping of Presidential Agenda</h3>
+  <h3 align="center">KeePass database save</h3>
 
   <p align="center">
     <br />
     <a href="https://github.com/othneildrew/Best-README-Template"><strong>Template used »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Mahh0/Web-Scraping-Of-Presidential-Agenda/pulls">Pull Request</a>
+    <a href="https://github.com/Mahh0/KeepassSync/pulls">Pull Request</a>
     ·
-    <a href="https://github.com/Mahh0/Web-Scraping-Of-Presidential-Agenda/issues">Report Bug</a>
+    <a href="https://github.com/Mahh0/KeepassSync/issues">Report Bug</a>
   </p>
 </div>
 
@@ -17,92 +17,63 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project is a project for the semesters 3 & 4 for <a href="https://iut-blois.univ-tours.fr/version-francaise/formations/dut-reseaux-et-telecommunications">IUT R&T Of Blois</a>
-
-The goal of this project is to scrape datas from <a href="https://www.elysee.fr/agenda">French Presidential Agenda Website</a>. This projects was built with VSCode, Java, <a href="https://jsoup.org/">Jsoup Library</a>, a <a href="https://www.mysql.com/fr/">MySql Database</a>.
+Small projet to have my keepass db accessible from everywhere without having to use gdrive, onedrive or smthing like this.
 
 ### Built With
 
-* [Jsoup](https://jsoup.org/)
-* [Java](https://www.java.com/fr/)
-* [VSCode](https://code.visualstudio.com/)
-* [MySQL and JDBC](https://dev.mysql.com/downloads/)
-* [Maven](https://maven.apache.org/)
+* [Powershell](https://docs.microsoft.com/fr-fr/powershell/)
+* [Copilot](https://copilot.github.com/)
+* [Windows Tasks Scheduler](https://docs.microsoft.com/fr-fr/windows/win32/taskschd/task-scheduler-start-page)
+* [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/)
+* [Samba linux service](https://doc.ubuntu-fr.org/samba)
 
 
-### Prerequisites
-* [VSCode](https://code.visualstudio.com/)
-* [MySQL server, with installed database](https://dev.mysql.com/downloads/)
+### Installation
+1. Samba service
+After configuring samba service, add the following configuration into /etc/samba/smb.conf
+```
+[keepass]
+        comment = keepass folder
+        path = /media/keepass
+        valid users = shareuser
+        public = no
+        browseable = yes
+        writeable = yes
+        create mask = 0644
+        directory mask = 0755
+        guest ok = no
+```
+guest ok = no unallow the use of guest account and valid users = shareuser says that only "shareuser" can access to this share. You also have to specify a path (you can make a separate partition). I created a folder (mkdir /media/keepass).
 
-### Installation (Windows and Linux)
-
-1. Unzip the files or clone in your workspace
-* 
-  ```sh
-  git clone https://github.com/Mahh0/Web-Scraping-Of-Presidential-Agenda
-  ```
-
-2. Install the MySQL Database. A MySQL dump is provided in ```Web-Scraping-Of-Presidential-Agenda\webScraping\src\main\resources\Database```
-```sh
-cd ".\Web-Scraping-Of-Presidential-Agenda\webScraping\src\main\resources\Database"
-mysql -u root -proot
-  create database webscraping;
-  exit
-  
-mysql -u root -p webscraping < MySQL_DUMP.sql
+After adding this configuration, you also have to create the user shareuser, create his password and a samba password :
+```
+sudo useradd shareuser
+sudo passwd shareuser
+sudo smbdpasswd shareuser
 ```
 
-3. Be sure that you have java configured on VSCode and maven can be necessary.
+Finally, you can restart the service :
+```
+sudo service smbd restart
+sudo service nbmd restart
+```
 
-4. Enjoy
+2. Powershell script
+The .ps1 script synchronize the remote keepass database to a local folder. If there is no remote file, it tries to find the local one and copy it to the remote one.
 
+You can download it [here](https://github.com//Mahh0/KeepassSync/archive/refs/heads/main.zip). The .exe is also right there !
 
-<!-- ROADMAP -->
-## Roadmap
+3. Task scheduler
+I placed the exe in C:\Program Files (x86)\keesync. Now we will create a task which will launch this exe on startup.
+```
+=> Windows button, Task scheduler
+=> Create a task
+=> Name : Keesync, Run with max privileges
+=> Trigger : New => At session opening, choose your user
+=> Action : Choose the exe.
+=> Conditions : Untick "Start the task only if the computer is connected ... " if you have a laptop
+```
 
-See the [open issues](https://github.com/Mahh0/Web-Scraping-Of-Presidential-Agenda/issues) for a list of proposed features (and known issues).
-All reports of this project can be found on my [Google Drive](https://drive.google.com/drive/folders/1o6rennKfMEGkGxXvfB0qvTHNwIg8ggoW?usp=sharing) 🇫🇷
+4. Nice
+Now, it should be working. I'm still working on this small project, it should be updated in the next few days.
 
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
-<!-- CONTACT -->
-## Contact
-
-[@MAH0_](https://twitter.com/MAH0_) - maho.spotify@gmail.com
-
-Project Link: [https://github.com/Mahh0/Web-Scraping-Of-Presidential-Agenda](https://github.com/Mahh0/Web-Scraping-Of-Presidential-Agenda)
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-* [GitHub Pages](https://pages.github.com)
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
