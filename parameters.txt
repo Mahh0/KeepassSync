@@ -1,0 +1,3 @@
+remoteFolder=Your remote folder (ex : \\192.168.1.50\share)
+localFolder=Your local folder (ex : C:\Users\you\Documents\keepass )
+keepassFileName=The name of your database file (with the .kdbx, ex: keepassdb )
