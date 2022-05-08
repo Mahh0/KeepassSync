@@ -1,0 +1,1 @@
+powershell.exe -ExecutionPolicy Bypass -File "C:\Program Files (x86)\keesync\keepass-sync.ps1"
