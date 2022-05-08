@@ -59,24 +59,36 @@ sudo service nbmd restart
 ```
 
 Note : I've already connected the drive (File explorer > This computer > Add a network drive) in which one in added my credentials.
-Note 2 : To make it accessible from WAN, you have to create a rule on your router to redirect WAN Port 445 to LAN RasperryIpAddress:445
+Note 2 : To make it accessible from WAN, you have to create a rule on your router to redirect WAN Port 445 to LAN RasperryIpAddress:445. You can also use a VPN, it's what I do with a VPN Server on my Raspberry Pi.
 
 2. Powershell script
 The .ps1 script synchronize the remote keepass database to a local folder. If there is no remote file, it tries to find the local one and copy it to the remote one.
 
-You can download it [here](https://github.com//Mahh0/KeepassSync/archive/refs/heads/main.zip). The .exe is also right there !
+You can download it [here](https://github.com//Mahh0/KeepassSync/archive/refs/heads/main.zip). There is no exe currently, but you can launch the powershell script with the task scheduler.
 
 3. Task scheduler
-I placed the exe in C:\Program Files (x86)\keesync. Now we will create a task which will launch this exe on startup.
+I placed everything in C:\Program Files (x86)\keesync. First, we need to create a task for powershell-bypass.bat to bypass the powershell execution policies :
 ```
 => Windows button, Task scheduler
 => Create a task
-=> Name : Keesync, Run with max privileges
-=> Trigger : New => At session opening, choose your user
-=> Action : Choose the exe.
-=> Conditions : Untick "Start the task only if the computer is connected ... " if you have a laptop
+=> Main tab | Name : Keepass Powershell Bypass, run with max privileges
+=> Triggers | : New => At session opening, choose your user
+=> Action | Start a program, Program/script : the bat file (for me : "C:\Program Files (x86)\keesync\powershell-bypass.bat")
+=> Conditions | Untick "Start the task only if the computer is connected ... " if you have a laptop
+```
+
+We can now add the main task for the powershell script :
+```
+=> Windows button, Task scheduler
+=> Create a task
+=> Main tab | Name : Keesync, Run with max privileges
+=> Trigger | New => At session opening, choose your user
+=> Action | Program/script : powershell, Arguments : -File "C:\Program Files (x86)\keesync\keepass-sync.ps1" (the ps1)
+=> Conditions | Untick "Start the task only if the computer is connected ... " if you have a laptop
 ```
 
 4. Nice
-Now, it should be working. I'm still working on this small project, it should be updated in the next few days.
+Now, it should be working. I'm still working on this small project, it should be updated in the next few days. There are currently 2 knowns bugs : 
+  - At startup, sometimes it cannot access to the remote share
+  - It cannot overwrite the files
 
