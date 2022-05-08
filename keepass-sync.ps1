@@ -45,7 +45,6 @@ try {
              Set-Content -Path "$PSScriptRoot\parameters.txt" -Value $parameters -Encoding utf8
          }
      
-     
          # Testing the accessibility of the local folder
          if(!(Test-Path -Path $localFolder)){
              $notify.showballoontip(10,'Keepass Sync !','The local path is not accessible ! Exiting',[system.windows.forms.tooltipicon]::Error)
@@ -95,15 +94,14 @@ try {
                  $wshell.Popup("The local file $keepassFileName is present. Last modification date: $localLastModified`n")
  
              # si le fichier local est plus recent que le fichier distant, on le copie au répertoire distant
-             if ($localLastModified -gt $remoteLastModified) {
+             if ($localLastModified -gt $remoteLastModified) { # copy the local file to the remote folder
                  $wshell.Popup("The local file $keepassFileName is more recent than the remote one. The local file will be copied to the remote folder.`n")
                  Copy-Item -Path $keepassFileName -Destination $remotePwd -Force
                  $notify.showballoontip(10,'Keepass Sync !','The local file $keepassFileName has been copied to the remote folder',[system.windows.forms.tooltipicon]::Info)
-             # si le fichier local est plus ancien que le fichier distant, on copie le fichier distant au répertoire local
-             } elseif ($localLastModified -lt $remoteLastModified) {
+             } elseif ($localLastModified -lt $remoteLastModified) { # copying the remote file to the local folder
                  $wshell.Popup("The local file $keepassFileName is older than the remote one. Synchronizing the remote file to the local one...")
-                 Copy-Item -Path $keepassFileName -Destination $localPwd -Force
-                 $wshell.Popup("Synchronization done !`n")
+                 Copy-Item -Path "$remoteFolder\$keepassFileName" -Destination $localPwd -Force
+                 $wshell.Popup("Synchronization done !`n") # not copying anything, just a notification
              } elseif ($localLastModified -eq $remoteLastModified) {
                  $wshell.Popup("The local file $keepassFileName is the same as the remote one. No sync needed`n")
  
